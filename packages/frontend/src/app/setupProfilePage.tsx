@@ -11,14 +11,14 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { MuiFileInput } from 'mui-file-input';
+import {useNavigate} from "react-router-dom";
 
-const toBase64 = (file: File) =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-  });
+const toBase64 = (file: File) => new Promise((resolve, reject) => {
+  const reader = new FileReader();
+  reader.readAsDataURL(file);
+  reader.onload = () => resolve(reader.result);
+  reader.onerror = error => reject(error);
+});
 
 const questions: {
   question: string;
@@ -47,6 +47,7 @@ const questions: {
 ];
 
 export default function SetupProfilePage() {
+  const navigate = useNavigate();
   const {
     isLoading: isUserInfoLoading,
     error: userInfoError,
@@ -54,25 +55,36 @@ export default function SetupProfilePage() {
   } = useQuery('userInfo', () =>
     fetch('/api/userinfo').then((res) => res.json())
   );
-  const {  } = useMutation('setupProfile', (data) =>
-    fetch('/api/setup-profile', {
+
+  const {isLoading, isError, error, mutate} = useMutation('setupProfile', async () => {
+    return await fetch('/api/setupProfile', {
       method: 'POST',
-      body: JSON.stringify(data),
-    }).then((res) => res.json())
-  );
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        profilePicture: await toBase64(answers[0]),
+        birthday: answers[1],
+        profileDescription: answers[2],
+      }),
+    });
+  });
 
   const [answers, setAnswers] = useState<any[]>([]);
   const [currentAnswer, setCurrentAnswer] = useState<any>('');
-  const currentQuestion = questions[answers.length];
 
-  if (currentQuestion === undefined) {
-    return (
-      <>
-        Filename: {answers[0].name} {JSON.stringify(answers)}
-      </>
-    );
+  function postProfileInfo() {
+    if(!isLoading) {
+      mutate();
+    }
   }
 
+  if (answers.length >= questions.length) {
+    postProfileInfo();
+    return <>Loading</>
+  }
+
+  const currentQuestion = questions[answers.length];
   let renderedLongQuestion = currentQuestion.question;
 
   if (!isUserInfoLoading && !userInfoError) {

@@ -35,3 +35,27 @@ export function checkLogin(email, password): User {
   const info = stmt.get(email, password);
   return info;
 }
+
+export function updateProfilePicture(email, picture) {
+  const stmt = db.prepare(
+    'UPDATE user SET profile_picture = ? WHERE email = ?'
+  );
+  const info = stmt.run(picture, email);
+  return info;
+}
+
+export function updateBirthday(email, birthday) {
+  const stmt = db.prepare(
+    'UPDATE user SET birthday = ? WHERE email = ?'
+  );
+  const info = stmt.run(birthday, email);
+  return info;
+}
+
+export function updateBio(email, bio) {
+  const stmt = db.prepare(
+    'UPDATE user SET bio = ? WHERE email = ?'
+  );
+  const info = stmt.run(bio, email);
+  return info;
+}

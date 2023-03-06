@@ -1,5 +1,5 @@
 import express from 'express';
-import { checkLogin, createUser } from './database';
+import {checkLogin, createUser, updateBio, updateBirthday, updateProfilePicture} from './database';
 import session from 'express-session';
 
 export interface User {
@@ -16,7 +16,9 @@ declare module 'express-session' {
 }
 
 const app = express();
-app.use(express.json());
+app.use(express.json({
+  limit: '50mb'
+}));
 
 app.use(
   session({
@@ -67,6 +69,10 @@ app.post('/api/setupProfile', (req, res) => {
   const profilePicture = req.body.profilePicture;
   const profileDescription = req.body.profileDescription;
   const birthday = req.body.birthday;
+
+  updateProfilePicture(user.email, profilePicture);
+  updateBirthday(user.email, birthday);
+  updateBio(user.email, profileDescription);
 
   console.log(
     'Setup profile',
