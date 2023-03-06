@@ -81,6 +81,8 @@ app.post('/api/setupProfile', (req, res) => {
     profileDescription,
     birthday
   );
+  
+  res.send({ success: true });
 });
 
 app.get('/api/logout', (req, res) => {

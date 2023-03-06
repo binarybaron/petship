@@ -57,7 +57,7 @@ export default function SetupProfilePage() {
   );
 
   const {isLoading, isError, error, mutate} = useMutation('setupProfile', async () => {
-    return await fetch('/api/setupProfile', {
+    await fetch('/api/setupProfile', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -68,6 +68,7 @@ export default function SetupProfilePage() {
         profileDescription: answers[2],
       }),
     });
+    navigate('/home');
   });
 
   const [answers, setAnswers] = useState<any[]>([]);
