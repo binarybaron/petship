@@ -7,6 +7,9 @@ export interface User {
   email: string;
   surname: string;
   name: string;
+  profile_picture: string;
+  birthday: string;
+  bio: string;
 }
 
 declare module 'express-session' {
@@ -81,7 +84,7 @@ app.post('/api/setupProfile', (req, res) => {
     profileDescription,
     birthday
   );
-  
+
   res.send({ success: true });
 });
 

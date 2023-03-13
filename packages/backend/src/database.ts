@@ -30,7 +30,7 @@ export function createUser(email, password, surname, name): User {
 
 export function checkLogin(email, password): User {
   const stmt = db.prepare(
-    'SELECT id, surname, name, email FROM user WHERE email = ? AND password = ?'
+    'SELECT id, surname, name, email, profile_picture, birthday, bio FROM user WHERE email = ? AND password = ?'
   );
   const info = stmt.get(email, password);
   return info;
