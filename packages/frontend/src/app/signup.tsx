@@ -10,8 +10,10 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import {useNavigate} from "react-router-dom";
 
 export default function SignUp() {
+  const navigate = useNavigate();
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -29,7 +31,12 @@ export default function SignUp() {
       method: 'POST',
     });
     const responseParsed = await response.json();
-    console.log(responseParsed);
+
+    if(responseParsed.success === true) {
+      navigate('/setup-profile');
+    }else {
+      alert(responseParsed.reason);
+    }
   };
 
   return (

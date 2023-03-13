@@ -10,8 +10,10 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import {useNavigate} from "react-router-dom";
 
 export default function SignIn() {
+  const navigate = useNavigate();
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -27,7 +29,11 @@ export default function SignIn() {
       method: 'POST',
     });
     const responseParsed = await response.json();
-    console.log(responseParsed);
+    if(responseParsed.success === true) {
+      navigate('/home');
+    }else {
+      alert(responseParsed.reason);
+    }
   };
 
   return (
