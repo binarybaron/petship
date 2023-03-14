@@ -17,6 +17,17 @@ export interface User {
   profile_picture: string;
   birthday: string;
   bio: string;
+  pet: Pet | null;
+}
+
+export interface Pet {
+  id: number;
+  name: string;
+  type: string;
+  birthday: string;
+  profile_picture: string;
+  hobbies: string;
+  additional_info: string;
 }
 
 declare module 'express-session' {

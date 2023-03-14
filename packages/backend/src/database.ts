@@ -1,5 +1,5 @@
 import Database from 'better-sqlite3';
-import { User } from './main';
+import {Pet, User} from './main';
 
 /*
 DATABASE DEFINITION
@@ -47,10 +47,14 @@ export function createUser(email, password, surname, name): User {
 
 export function checkLogin(email, password): User {
   const stmt = db.prepare(
-    'SELECT user.id as id, user.surname as surname, user.name as name, user.email as email, user.profile_picture as profile_picture, user.birthday as birthday, user.bio as bio, pet.id as pet_id, pet.name as pet_name, pet.type as pet_type, pet.birthday as pet_birthday, pet.profile_picture as pet_profile_picture, pet.hobbies as pet_hobbies, pet.additional_info as pet_additional_info FROM user LEFT JOIN pet ON user.pet_id = pet.id WHERE email = ? AND password = ?'
+    'SELECT user.id as id, user.surname as surname, user.name as name, user.email as email, user.profile_picture as profile_picture, user.birthday as birthday, user.bio as bio FROM user WHERE email = ? AND password = ?'
   );
   const info = stmt.get(email, password);
-  return info;
+  const pet = getPet(info.id) || null;
+  return {
+    ...info,
+    pet,
+  };
 }
 
 export function updateProfilePicture(email, picture) {
@@ -74,7 +78,7 @@ export function updateBio(email, bio) {
 }
 
 export function createPet(
-  owner,
+  ownerId: number,
   name,
   type,
   birthday,
@@ -87,6 +91,14 @@ export function createPet(
   );
   stmt.run(name, type, birthday, profile_picture, hobbies, additional_info);
 
-  const stmt2 = db.prepare('UPDATE user SET pet_id = ? WHERE email = ?');
-  const info = stmt2.run(name, owner);
+  const stmt2 = db.prepare('UPDATE user SET pet_id = last_insert_rowid() WHERE id = ?');
+  const info = stmt2.run(ownerId);
+}
+
+export function getPet(ownerId: number): Pet {
+  const stmt = db.prepare(
+    'SELECT pet.id as id, pet.name as name, pet.type as type, pet.birthday as birthday, pet.profile_picture as profile_picture, pet.hobbies as hobbies, pet.additional_info as additional_info FROM user INNER JOIN pet ON user.pet_id = pet.id WHERE user.id = ?'
+  );
+  const info = stmt.get(ownerId);
+  return info;
 }
