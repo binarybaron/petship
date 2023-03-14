@@ -4,26 +4,21 @@ import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import * as React from 'react';
-import { useQuery } from 'react-query';
 import { useNavigate } from 'react-router-dom';
+import { useAccountInfo } from './hooks';
+import MatchesTable from "./matchesTable";
 
 export default function HomePage() {
   const navigate = useNavigate();
 
-  const {
-    isLoading: isUserInfoLoading,
-    error: userInfoError,
-    data: userInfo,
-  } = useQuery('userInfo', () =>
-    fetch('/api/userinfo').then((res) => res.json())
-  );
+  const { isUserInfoLoading, userInfo } = useAccountInfo();
 
   async function logout() {
     await fetch('/api/logout');
     navigate('/signin');
   }
 
-  if (isUserInfoLoading || userInfoError) {
+  if (isUserInfoLoading || userInfo === null) {
     return null;
   }
 
@@ -56,16 +51,26 @@ export default function HomePage() {
             gap: 0.5,
           }}
         >
-          <Button variant="contained">Find your new pet</Button>
           <Button
             variant="contained"
-            onClick={() => navigate('/pet-setup-profile')}
+            onClick={() => navigate('/find-pet-feed')}
           >
-            Find a new owner for your pet
+            Find your new pet
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() =>
+              navigate(userInfo.pet ? '/find-owner-feed' : '/pet-setup-profile')
+            }
+          >
+            {userInfo.pet
+              ? 'Find a new owner for your pet'
+              : 'Create a profile for your pet'}
           </Button>
           <Button variant="contained" color="error" onClick={logout}>
             Logout
           </Button>
+          <MatchesTable />
         </Box>
       </Box>
     </Container>

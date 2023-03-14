@@ -1,8 +1,16 @@
 import express from 'express';
 import {
+  addUserPetVote,
+  addUserUserVote,
   checkLogin,
   createPet,
   createUser,
+  getAllPets,
+  getAllUsers,
+  getUser,
+  getUserPetMatches,
+  getUserPetVotedOn,
+  getUserUserVotedOn,
   updateBio,
   updateBirthday,
   updateProfilePicture,
@@ -144,8 +152,97 @@ app.get('/api/logout', (req, res) => {
   });
 });
 
-app.get('/api/userinfo', (req, res) => {
-  res.send(req.session.user);
+app.get('/api/userInfo', (req, res) => {
+  if (!req.session.user) {
+    res.status(401).send({ success: false, reason: 'Not logged in' });
+    return;
+  }
+  res.send({ success: true, user: req.session.user });
+});
+
+app.get('/api/allUsers', (req, res) => {
+  const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
+  const offset = req.query.offset ? parseInt(req.query.offset as string) : 0;
+  const users = getAllUsers().slice(offset, offset + limit);
+  res.send({ success: true, users });
+});
+
+app.get('/api/getNextUserUserVote', (req, res) => {
+  if (!req.session.user) {
+    res.status(401).send({ success: false, reason: 'Not logged in' });
+    return;
+  }
+
+  const user = req.session.user;
+  const users = getAllUsers();
+  const votedOnUsers = getUserUserVotedOn(user.id);
+  const notVotedOnUsers = users.filter(
+    (u) => !votedOnUsers.includes(u.id) && u.id !== user.id
+  );
+  const nextUser = notVotedOnUsers[0];
+
+  res.send({ success: true, user: nextUser });
+});
+
+app.post('/api/addUserUserVote', (req, res) => {
+  const user = req.session.user;
+  if (!user) {
+    res.status(401).send({ success: false, reason: 'Not logged in' });
+    return;
+  }
+
+  const likedUserId = req.body.ownerId as number;
+  const positive = req.body.positive as boolean;
+
+  addUserUserVote(user.id, likedUserId, positive);
+  res.send({ success: true });
+});
+
+app.get('/api/getNextUserPetVote', (req, res) => {
+  if (!req.session.user) {
+    res.status(401).send({ success: false, reason: 'Not logged in' });
+    return;
+  }
+  req.session.user = getUser(req.session.user.id);
+
+  const user = req.session.user;
+  const pets = getAllPets();
+  const votedOnPets = getUserPetVotedOn(user.id);
+  const notVotedOnPets = pets.filter(
+    (p) => !votedOnPets.includes(p.id) && (!user.pet || user.pet.id !== p.id)
+  );
+  const nextPet = notVotedOnPets[0];
+
+  res.send({ success: true, pet: nextPet });
+});
+
+app.post('/api/addUserPetVote', (req, res) => {
+  const user = req.session.user;
+  if (!user) {
+    res.status(401).send({ success: false, reason: 'Not logged in' });
+    return;
+  }
+
+  const likedPetId = req.body.petId as number;
+  const positive = req.body.positive as boolean;
+
+  addUserPetVote(user.id, likedPetId, positive);
+  res.send({ success: true });
+});
+
+app.get('/api/getMatches', (req, res) => {
+  if (!req.session.user) {
+    res.status(401).send({ success: false, reason: 'Not logged in' });
+    return;
+  }
+
+  const user = req.session.user;
+
+  const petMatches = getUserPetMatches().filter(
+    (match) => match.buyer.id === user.id || match.owner.id === user.id
+  );
+
+  res.send({ success: true, matches: petMatches });
 });
 
 const port = process.env.PORT || 3333;

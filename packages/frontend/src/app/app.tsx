@@ -6,8 +6,10 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import * as React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import HomePage from './home';
+import HomePage from './homePage';
 import PetSetupProfilePage from './petSetupProfilePage';
+import FindOwnerFeedPage from './findOwnerFeedPage';
+import FindPetFeedPage from './findPetFeedPage';
 
 const queryClient = new QueryClient();
 const theme = createTheme();
@@ -24,6 +26,8 @@ export function App() {
           <Route path="/home" element={<HomePage />} />
           <Route path="/" element={<HomePage />} />
           <Route path="/pet-setup-profile" element={<PetSetupProfilePage />} />
+          <Route path="/find-owner-feed" element={<FindOwnerFeedPage />} />
+          <Route path="/find-pet-feed" element={<FindPetFeedPage />} />
         </Routes>
       </ThemeProvider>
     </QueryClientProvider>

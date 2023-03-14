@@ -6,12 +6,12 @@ import Button from '@mui/material/Button';
 import * as React from 'react';
 import { useState } from 'react';
 import { QuestionAnswerOutlined } from '@mui/icons-material';
-import { useMutation, useQuery } from 'react-query';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { MuiFileInput } from 'mui-file-input';
 import { useNavigate } from 'react-router-dom';
+import { useAccountInfo } from './hooks';
 
 export const toBase64 = (file: File) =>
   new Promise((resolve, reject) => {
@@ -49,13 +49,7 @@ const questions: {
 
 export default function SetupProfilePage() {
   const navigate = useNavigate();
-  const {
-    isLoading: isUserInfoLoading,
-    error: userInfoError,
-    data: userInfo,
-  } = useQuery('userInfo', () =>
-    fetch('/api/userinfo').then((res) => res.json())
-  );
+  const { isUserInfoLoading, userInfo } = useAccountInfo();
 
   async function submit() {
     await fetch('/api/setupProfile', {
@@ -87,7 +81,7 @@ export default function SetupProfilePage() {
   const currentQuestion = questions[answers.length];
   let renderedLongQuestion = currentQuestion.question;
 
-  if (!isUserInfoLoading && !userInfoError) {
+  if (!isUserInfoLoading && userInfo !== null) {
     renderedLongQuestion = renderedLongQuestion.replace(
       '{name}',
       userInfo.name

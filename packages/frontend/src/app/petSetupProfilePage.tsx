@@ -12,6 +12,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { MuiFileInput } from 'mui-file-input';
 import { useNavigate } from 'react-router-dom';
+import { useAccountInfo } from './hooks';
 
 const toBase64 = (file: File) =>
   new Promise((resolve, reject) => {
@@ -67,13 +68,7 @@ const questions: {
 
 export default function PetSetupProfilePage() {
   const navigate = useNavigate();
-  const {
-    isLoading: isUserInfoLoading,
-    error: userInfoError,
-    data: userInfo,
-  } = useQuery('userInfo', () =>
-    fetch('/api/userinfo').then((res) => res.json())
-  );
+  const { isUserInfoLoading, userInfo } = useAccountInfo();
 
   async function submit(ans: any[]) {
     const response = await fetch('/api/petSetupProfile', {
@@ -92,7 +87,7 @@ export default function PetSetupProfilePage() {
     });
     const data = await response.json();
     if (data.success) {
-      navigate('/find-owner');
+      navigate('/find-owner-feed');
     } else {
       alert(data.reason);
     }
@@ -106,13 +101,13 @@ export default function PetSetupProfilePage() {
   }
 
   if (answers.length >= questions.length) {
-    return 'Loading...' + answers[3].name;
+    return <>Loading... {answers[3].name}</>;
   }
 
   const currentQuestion = questions[answers.length];
   let renderedLongQuestion = currentQuestion.question;
 
-  if (!isUserInfoLoading && !userInfoError) {
+  if (!isUserInfoLoading && userInfo !== null) {
     renderedLongQuestion = renderedLongQuestion.replace(
       '{name}',
       userInfo.name

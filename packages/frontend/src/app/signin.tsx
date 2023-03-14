@@ -9,9 +9,12 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { useNavigate } from 'react-router-dom';
+import { useAccountInfo } from './hooks';
 
 export default function SignIn() {
   const navigate = useNavigate();
+  const { isUserInfoLoading, userInfo, refetch } = useAccountInfo();
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -28,11 +31,16 @@ export default function SignIn() {
     });
     const responseParsed = await response.json();
     if (responseParsed.success === true) {
+      await refetch();
       navigate('/home');
     } else {
       alert(responseParsed.reason);
     }
   };
+
+  if (!isUserInfoLoading && userInfo !== null) {
+    navigate('/home');
+  }
 
   return (
     <Container component="main" maxWidth="xs">
