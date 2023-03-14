@@ -11,14 +11,15 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { MuiFileInput } from 'mui-file-input';
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
-const toBase64 = (file: File) => new Promise((resolve, reject) => {
-  const reader = new FileReader();
-  reader.readAsDataURL(file);
-  reader.onload = () => resolve(reader.result);
-  reader.onerror = error => reject(error);
-});
+export const toBase64 = (file: File) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
 
 const questions: {
   question: string;
@@ -56,7 +57,7 @@ export default function SetupProfilePage() {
     fetch('/api/userinfo').then((res) => res.json())
   );
 
-  const {isLoading, isError, error, mutate} = useMutation('setupProfile', async () => {
+  async function submit() {
     await fetch('/api/setupProfile', {
       method: 'POST',
       headers: {
@@ -69,20 +70,18 @@ export default function SetupProfilePage() {
       }),
     });
     navigate('/home');
-  });
+  }
 
   const [answers, setAnswers] = useState<any[]>([]);
   const [currentAnswer, setCurrentAnswer] = useState<any>('');
 
-  function postProfileInfo() {
-    if(!isLoading) {
-      mutate();
-    }
+  async function postProfileInfo() {
+    await submit();
   }
 
   if (answers.length >= questions.length) {
     postProfileInfo();
-    return <>Loading</>
+    return <>Loading</>;
   }
 
   const currentQuestion = questions[answers.length];

@@ -1,5 +1,12 @@
 import express from 'express';
-import {checkLogin, createUser, updateBio, updateBirthday, updateProfilePicture} from './database';
+import {
+  checkLogin,
+  createPet,
+  createUser,
+  updateBio,
+  updateBirthday,
+  updateProfilePicture,
+} from './database';
 import session from 'express-session';
 
 export interface User {
@@ -19,9 +26,11 @@ declare module 'express-session' {
 }
 
 const app = express();
-app.use(express.json({
-  limit: '50mb'
-}));
+app.use(
+  express.json({
+    limit: '50mb',
+  })
+);
 
 app.use(
   session({
@@ -84,6 +93,36 @@ app.post('/api/setupProfile', (req, res) => {
     profileDescription,
     birthday
   );
+
+  res.send({ success: true });
+});
+
+app.post('/api/petSetupProfile', (req, res) => {
+  const user = req.session.user;
+  if (!user) {
+    res.status(401).send({ success: false, reason: 'Not logged in' });
+    return;
+  }
+
+  const name = req.body.name;
+  const type = req.body.type;
+  const age = req.body.age;
+  const picture = req.body.picture;
+  const hobbies = req.body.hobbies;
+  const additionalInfo = req.body.additionalInfo;
+
+  console.log(
+    'Setup pet profile',
+    user,
+    name,
+    type,
+    age,
+    picture,
+    hobbies,
+    additionalInfo
+  );
+
+  createPet(user.id, name, type, age, picture, hobbies, additionalInfo);
 
   res.send({ success: true });
 });

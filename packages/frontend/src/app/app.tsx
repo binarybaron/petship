@@ -6,7 +6,8 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import * as React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import HomePage from "./home";
+import HomePage from './home';
+import PetSetupProfilePage from './petSetupProfilePage';
 
 const queryClient = new QueryClient();
 const theme = createTheme();
@@ -21,6 +22,8 @@ export function App() {
           <Route path="/signin" element={<SignIn />} />
           <Route path="/setup-profile" element={<SetupProfilePage />} />
           <Route path="/home" element={<HomePage />} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/pet-setup-profile" element={<PetSetupProfilePage />} />
         </Routes>
       </ThemeProvider>
     </QueryClientProvider>
