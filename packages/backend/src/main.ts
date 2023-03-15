@@ -1,4 +1,4 @@
-import express from 'express';
+import express, {Request} from 'express';
 import {
   addUserPetVote,
   addUserUserVote,
@@ -16,6 +16,7 @@ import {
   updateProfilePicture,
 } from './database';
 import session from 'express-session';
+import * as QueryString from "querystring";
 
 export interface User {
   id: number;
@@ -60,6 +61,12 @@ app.use(
   })
 );
 
+function updateSessionData(req: Request<{}, any, any, any, Record<string, any>>) {
+  if(req.session.user) {
+    req.session.user = getUser(req.session.user.id);
+  }
+}
+
 app.post('/api/signup', (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
@@ -96,6 +103,7 @@ app.post('/api/setupProfile', (req, res) => {
     res.status(401).send({ success: false, reason: 'Not logged in' });
     return;
   }
+  updateSessionData(req);
 
   const profilePicture = req.body.profilePicture;
   const profileDescription = req.body.profileDescription;
@@ -122,6 +130,7 @@ app.post('/api/petSetupProfile', (req, res) => {
     res.status(401).send({ success: false, reason: 'Not logged in' });
     return;
   }
+  updateSessionData(req);
 
   const name = req.body.name;
   const type = req.body.type;
@@ -157,6 +166,8 @@ app.get('/api/userInfo', (req, res) => {
     res.status(401).send({ success: false, reason: 'Not logged in' });
     return;
   }
+  updateSessionData(req);
+
   res.send({ success: true, user: req.session.user });
 });
 
@@ -172,6 +183,7 @@ app.get('/api/getNextUserUserVote', (req, res) => {
     res.status(401).send({ success: false, reason: 'Not logged in' });
     return;
   }
+  updateSessionData(req);
 
   const user = req.session.user;
   const users = getAllUsers();
@@ -190,6 +202,7 @@ app.post('/api/addUserUserVote', (req, res) => {
     res.status(401).send({ success: false, reason: 'Not logged in' });
     return;
   }
+  updateSessionData(req);
 
   const likedUserId = req.body.ownerId as number;
   const positive = req.body.positive as boolean;
@@ -203,7 +216,7 @@ app.get('/api/getNextUserPetVote', (req, res) => {
     res.status(401).send({ success: false, reason: 'Not logged in' });
     return;
   }
-  req.session.user = getUser(req.session.user.id);
+  updateSessionData(req);
 
   const user = req.session.user;
   const pets = getAllPets();
@@ -222,6 +235,7 @@ app.post('/api/addUserPetVote', (req, res) => {
     res.status(401).send({ success: false, reason: 'Not logged in' });
     return;
   }
+  updateSessionData(req);
 
   const likedPetId = req.body.petId as number;
   const positive = req.body.positive as boolean;
@@ -235,6 +249,7 @@ app.get('/api/getMatches', (req, res) => {
     res.status(401).send({ success: false, reason: 'Not logged in' });
     return;
   }
+  updateSessionData(req);
 
   const user = req.session.user;
 
