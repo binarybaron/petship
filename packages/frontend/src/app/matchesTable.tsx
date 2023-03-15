@@ -1,6 +1,7 @@
 import {useQuery} from "react-query";
 import {Match} from "./hooks";
-import {Table, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
+import {Paper, Table, TableCell, TableContainer, TableHead, TableRow, Typography} from "@mui/material";
+import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 
 export default function MatchesTable() {
   const {
@@ -20,7 +21,11 @@ export default function MatchesTable() {
     return <div>Error loading matches</div>;
   }
   return (
-    <TableContainer>
+    <>
+    <Typography variant="overline" sx={{
+      mt: 10}}
+    >Your Matches</Typography>
+    <TableContainer component={Paper}>
       <Table>
         <TableHead>
           <TableRow>
@@ -38,5 +43,6 @@ export default function MatchesTable() {
         ))}
       </Table>
     </TableContainer>
+    </>
   );
 }
