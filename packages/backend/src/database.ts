@@ -228,8 +228,8 @@ export function getUserPetMatches(): { buyer: User; owner: User; pet: Pet }[] {
             SELECT id as ownerId
             FROM user
             WHERE pet_id = upv.liked_pet_id
-        )
-    )
+        ) AND positive = 1
+    ) AND positive = 1
   `);
   const info = stmt.all().map((match) => {
     const owner = getOwnerOfPet(match.petId);
