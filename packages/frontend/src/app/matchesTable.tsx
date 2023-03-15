@@ -43,15 +43,18 @@ export default function MatchesTable() {
               <TableCell>Pet Name</TableCell>
             </TableRow>
           </TableHead>
-          {data?.map((match) => (
-            <TableRow key={match.pet.id}>
+          {data?.filter(s => s != null).map((match) => (
+            <TableRow key={match.owner.pet?.id}>
               <TableCell>
                 {match.owner.surname} {match.owner.name}({match.owner.email})
               </TableCell>
               <TableCell>
                 {match.buyer.surname} {match.buyer.name}({match.buyer.email})
               </TableCell>
-              <TableCell>{match.pet.name}</TableCell>
+              <TableCell>
+                {match.owner.pet?.name}
+                <img width={20} src={match.owner.pet?.profile_picture}/>
+              </TableCell>
             </TableRow>
           ))}
         </Table>
