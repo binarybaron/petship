@@ -53,9 +53,9 @@ export default function HomePage() {
         >
           <Button
             variant="contained"
-            onClick={() => navigate('/find-pet-feed')}
+            onClick={() => navigate(userInfo.birthday ? '/find-pet-feed' : '/setup-profile')}
           >
-            Find your new pet
+            {userInfo.birthday ? 'Find your new pet' : 'Setup your buyer profile that will be shown to sellers'}
           </Button>
           <Button
             variant="contained"
