@@ -8,6 +8,7 @@ import {
   Typography,
 } from '@mui/material';
 import { Favorite, HeartBroken } from '@mui/icons-material';
+import { ReactNode } from 'react';
 
 export function PersonaCard({
   onLike,
@@ -18,13 +19,20 @@ export function PersonaCard({
 }: {
   profilePicture: string;
   fullName: string;
-  bio: string;
+  bio: ReactNode;
   onLike: () => void;
   onDislike: () => void;
 }) {
   return (
     <Card>
-      <CardMedia component="img" image={profilePicture} />
+      <CardMedia
+        component="img"
+        image={profilePicture}
+        sx={{
+          maxHeight: 500,
+          maxWidth: 500,
+        }}
+      />
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
           {fullName}

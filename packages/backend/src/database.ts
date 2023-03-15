@@ -208,9 +208,7 @@ export function getUserPetVotedOn(user_id: number): number[] {
 }
 
 function getOwnerOfPet(pet_id: number): User {
-  const stmt = db.prepare(
-    'SELECT user.id as id FROM user WHERE pet_id = ?'
-  );
+  const stmt = db.prepare('SELECT user.id as id FROM user WHERE pet_id = ?');
   const info = stmt.get(pet_id);
   return getUser(info.id);
 }

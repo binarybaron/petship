@@ -84,7 +84,7 @@ export default function SetupProfilePage() {
   if (!isUserInfoLoading && userInfo !== null) {
     renderedLongQuestion = renderedLongQuestion.replace(
       '{name}',
-      userInfo.name
+      userInfo.surname
     );
   }
 

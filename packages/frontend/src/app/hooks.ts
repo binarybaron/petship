@@ -24,9 +24,9 @@ export interface Pet {
 }
 
 export interface Match {
-  buyer: User,
-  pet: Pet,
-  owner: User,
+  buyer: User;
+  pet: Pet;
+  owner: User;
 }
 
 export function useAccountInfo(): {

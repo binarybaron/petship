@@ -6,7 +6,7 @@ import Button from '@mui/material/Button';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAccountInfo } from './hooks';
-import MatchesTable from "./matchesTable";
+import MatchesTable from './matchesTable';
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -53,9 +53,13 @@ export default function HomePage() {
         >
           <Button
             variant="contained"
-            onClick={() => navigate(userInfo.birthday ? '/find-pet-feed' : '/setup-profile')}
+            onClick={() =>
+              navigate(userInfo.birthday ? '/find-pet-feed' : '/setup-profile')
+            }
           >
-            {userInfo.birthday ? 'Find your new pet' : 'Setup your buyer profile that will be shown to sellers'}
+            {userInfo.birthday
+              ? 'Find your new pet'
+              : 'Setup your buyer profile that will be shown to sellers'}
           </Button>
           <Button
             variant="contained"

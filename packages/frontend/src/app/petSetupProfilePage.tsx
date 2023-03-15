@@ -101,7 +101,7 @@ export default function PetSetupProfilePage() {
   }
 
   if (answers.length >= questions.length) {
-    return <>Loading... {answers[3].name}</>;
+    return <>Loading... {answers[3].surname}</>;
   }
 
   const currentQuestion = questions[answers.length];

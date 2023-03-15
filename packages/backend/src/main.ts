@@ -1,4 +1,4 @@
-import express, {Request} from 'express';
+import express, { Request } from 'express';
 import {
   addUserPetVote,
   addUserUserVote,
@@ -16,7 +16,7 @@ import {
   updateProfilePicture,
 } from './database';
 import session from 'express-session';
-import * as QueryString from "querystring";
+import * as QueryString from 'querystring';
 
 export interface User {
   id: number;
@@ -61,8 +61,10 @@ app.use(
   })
 );
 
-function updateSessionData(req: Request<{}, any, any, any, Record<string, any>>) {
-  if(req.session.user) {
+function updateSessionData(
+  req: Request<{}, any, any, any, Record<string, any>>
+) {
+  if (req.session.user) {
     req.session.user = getUser(req.session.user.id);
   }
 }

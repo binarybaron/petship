@@ -52,8 +52,14 @@ export default function FindPetFeedPage() {
           <PersonaCard
             onLike={() => submitPetVote(true)}
             onDislike={() => submitPetVote(false)}
-            bio={votePet.hobbies + votePet.additional_info}
-            fullName={votePet.name}
+            bio={
+              <>
+                Hobbies: {votePet.hobbies}
+                <br />
+                Additional info: {votePet.additional_info}
+              </>
+            }
+            fullName={`${votePet.name} (${votePet.type})`}
             profilePicture={votePet.profile_picture}
           />
         ) : (
